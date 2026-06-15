@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Gangaraju Jalapinti — Oracle FLEXCUBE Consultant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet"/>
+<style>
+/* ============================================================
+   TOKENS
+============================================================ */
+:root {
+  --white:      #FFFFFF;
+  --off:        #F8F7F4;
+  --off2:       #F0EEE9;
+  --ink:        #111118;
+  --ink2:       #2A2A35;
+  --soft:       #6B6B80;
+  --border:     #E2E0DA;
+
+  --teal:       #0DB4A0;
+  --teal-mid:   #0A9286;
+  --teal-pale:  #E6F8F6;
+
+  --sky:        #4B8EF1;
+  --sky-pale:   #EBF2FE;
+
+  --rose:       #F25C7A;
+  --rose-pale:  #FEE9EE;
+
+  --sand:       #F4B860;
+  --sand-pale:  #FEF5E7;
+
+  --h: 'Syne', sans-serif;
+  --b: 'DM Sans', sans-serif;
+
+  --r4: 4px;
+  --r8: 8px;
+  --r16: 16px;
+  --r999: 999px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04);
+}
+
+/* ============================================================
+   RESET & BASE
+============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--b);
+  background: var(--white);
+  color: var(--ink);
+  line-height: 1.7;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+img { display: block; max-width: 100%; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* ============================================================
+   SCROLL REVEAL — initial state
+============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.65s cubic-bezier(.16,1,.3,1),
+              transform 0.65s cubic-bezier(.16,1,.3,1);
+}
+.reveal.visible { opacity: 1; transform: none; }
+.reveal-left  { opacity: 0; transform: translateX(-32px); transition: opacity 0.65s cubic-bezier(.16,1,.3,1), transform 0.65s cubic-bezier(.16,1,.3,1); }
+.reveal-right { opacity: 0; transform: translateX(32px);  transition: opacity 0.65s cubic-bezier(.16,1,.3,1), transform 0.65s cubic-bezier(.16,1,.3,1); }
+.reveal-left.visible, .reveal-right.visible { opacity: 1; transform: none; }
+.d1 { transition-delay: 0.05s !important; }
+.d2 { transition-delay: 0.12s !important; }
+.d3 { transition-delay: 0.19s !important; }
+.d4 { transition-delay: 0.26s !important; }
+.d5 { transition-delay: 0.33s !important; }
+.d6 { transition-delay: 0.40s !important; }
+
+/* ============================================================
+   NAV
+============================================================ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  transition: box-shadow 0.3s;
+}
+nav.scrolled { box-shadow: var(--shadow-md); }
+.nav-inner {
+  max-width: 1120px; margin: 0 auto;
+  padding: 0 2rem;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-family: var(--h);
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--ink);
+  display: flex; align-items: center; gap: 6px;
+}
+.nav-logo .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); display: inline-block; }
+.nav-links { display: flex; align-items: center; gap: 2rem; }
+.nav-links a {
+  font-size: 0.875rem; font-weight: 500; color: var(--soft);
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-cta {
+  font-size: 0.875rem; font-weight: 600;
+  background: var(--ink); color: var(--white);
+  padding: 9px 22px; border-radius: var(--r999);
+  transition: background 0.2s, transform 0.15s;
+}
+.nav-cta:hover { background: var(--teal); transform: translateY(-1px); }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+.hamburger span { display: block; width: 22px; height: 2px; background: var(--ink); border-radius: 2px; transition: all 0.2s; }
+.mobile-nav {
+  display: none; position: fixed; inset: 0; z-index: 190;
+  background: var(--white);
+  flex-direction: column; align-items: center; justify-content: center; gap: 2.5rem;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a { font-family: var(--h); font-size: 2rem; font-weight: 700; color: var(--ink); }
+.mobile-nav .close-btn {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  font-size: 1.5rem; cursor: pointer; color: var(--soft);
+}
+
+/* ============================================================
+   HERO
+============================================================ */
+.hero {
+  min-height: 100vh;
+  padding: 9rem 2rem 5rem;
+  display: flex; align-items: center;
+  position: relative; overflow: hidden;
+  background: var(--off);
+}
+/* subtle gradient blobs */
+.blob {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); pointer-events: none; z-index: 0;
+}
+.blob-1 {
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(13,180,160,0.15), transparent 70%);
+  top: -100px; right: -80px;
+  animation: float1 8s ease-in-out infinite;
+}
+.blob-2 {
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(75,142,241,0.12), transparent 70%);
+  bottom: 0px; left: -60px;
+  animation: float2 10s ease-in-out infinite;
+}
+@keyframes float1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,20px)} }
+@keyframes float2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(20px,-20px)} }
+
+.hero-inner {
+  max-width: 1120px; margin: 0 auto; width: 100%;
+  display: grid; grid-template-columns: 1fr 420px; gap: 4rem;
+  align-items: center; position: relative; z-index: 1;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--teal-pale); color: var(--teal-mid);
+  font-size: 0.8rem; font-weight: 600;
+  padding: 6px 14px; border-radius: var(--r999);
+  border: 1px solid rgba(13,180,160,0.2);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.3px;
+}
+.hero-eyebrow .pulse {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--teal);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+.hero h1 {
+  font-family: var(--h);
+  font-size: clamp(3rem, 5.5vw, 5rem);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -2px;
+  color: var(--ink);
+  margin-bottom: 1.25rem;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--teal) 0%, var(--sky) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: 1.05rem; color: var(--soft);
+  max-width: 480px; line-height: 1.75;
+  margin-bottom: 2rem;
+}
+.hero-flags {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 2.25rem;
+}
+.flag-chip {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--white); border: 1px solid var(--border);
+  color: var(--ink2); font-size: 0.8rem; font-weight: 500;
+  padding: 5px 12px; border-radius: var(--r999);
+  box-shadow: var(--shadow-sm);
+}
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-primary {
+  font-weight: 600; font-size: 0.9rem;
+  background: var(--ink); color: var(--white);
+  padding: 13px 28px; border-radius: var(--r999);
+  border: 2px solid var(--ink);
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary:hover { background: var(--teal); border-color: var(--teal); transform: translateY(-2px); }
+.btn-outline {
+  font-weight: 600; font-size: 0.9rem;
+  background: transparent; color: var(--ink);
+  padding: 13px 28px; border-radius: var(--r999);
+  border: 2px solid var(--border);
+  transition: all 0.2s;
+}
+.btn-outline:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+/* HERO CARD */
+.hero-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+.hcard-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--teal), var(--sky));
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--h); font-size: 1.6rem; font-weight: 800; color: var(--white);
+  margin-bottom: 1rem;
+}
+.hcard-name { font-family: var(--h); font-size: 1.15rem; font-weight: 700; color: var(--ink); margin-bottom: 0.2rem; }
+.hcard-role { font-size: 0.82rem; color: var(--soft); margin-bottom: 1.25rem; }
+.hcard-divider { height: 1px; background: var(--border); margin-bottom: 1.25rem; }
+.hcard-stat {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid var(--off2);
+  font-size: 0.85rem;
+}
+.hcard-stat:last-child { border: none; }
+.hcard-label { color: var(--soft); font-weight: 400; }
+.hcard-val { color: var(--ink); font-weight: 600; }
+.hcard-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #EDFDF6; color: #0A7A5F;
+  font-size: 0.75rem; font-weight: 600;
+  padding: 3px 10px; border-radius: var(--r999);
+  border: 1px solid rgba(10,122,95,0.2);
+  margin-top: 1rem;
+}
+.hcard-badge .dot2 { width: 6px; height: 6px; border-radius: 50%; background: #12C27A; animation: pulse 2s infinite; }
+.stats-strip {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 1px; background: var(--border);
+  border: 1px solid var(--border); border-radius: var(--r8);
+  overflow: hidden; margin-top: 1.25rem;
+}
+.stat-cell { background: var(--white); padding: 0.9rem 0.5rem; text-align: center; }
+.stat-n { font-family: var(--h); font-size: 1.4rem; font-weight: 800; color: var(--ink); }
+.stat-l { font-size: 0.7rem; color: var(--soft); margin-top: 1px; }
+
+/* ============================================================
+   SECTION COMMONS
+============================================================ */
+.sec { padding: 6rem 2rem; }
+.sec-inner { max-width: 1120px; margin: 0 auto; }
+.sec-eyebrow {
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--teal);
+  margin-bottom: 0.6rem;
+}
+.sec-title {
+  font-family: var(--h);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 800; letter-spacing: -1px;
+  color: var(--ink); margin-bottom: 0.5rem;
+}
+.sec-sub { font-size: 0.95rem; color: var(--soft); max-width: 520px; line-height: 1.75; }
+.sec-head { margin-bottom: 3rem; }
+.alt { background: var(--off); }
+
+/* ============================================================
+   SKILLS
+============================================================ */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+.skill-pill-group {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r16);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.skill-pill-group:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+.spg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; }
+.spg-icon {
+  width: 36px; height: 36px; border-radius: var(--r8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem;
+}
+.spg-icon.teal { background: var(--teal-pale); }
+.spg-icon.sky  { background: var(--sky-pale); }
+.spg-icon.rose { background: var(--rose-pale); }
+.spg-icon.sand { background: var(--sand-pale); }
+.spg-name { font-family: var(--h); font-size: 0.9rem; font-weight: 700; color: var(--ink); }
+.spg-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.spg-tag {
+  font-size: 0.72rem; font-weight: 500;
+  background: var(--off); color: var(--ink2);
+  padding: 3px 9px; border-radius: var(--r999);
+  border: 1px solid var(--border);
+}
+
+/* ============================================================
+   EXPERIENCE
+============================================================ */
+.timeline { position: relative; padding-left: 2rem; }
+.timeline::before {
+  content: ''; position: absolute;
+  left: 5px; top: 6px; bottom: 6px;
+  width: 1px; background: var(--border);
+}
+.tl-item { position: relative; margin-bottom: 2rem; }
+.tl-dot {
+  position: absolute; left: -2rem; top: 5px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--teal); border: 2px solid var(--white);
+  box-shadow: 0 0 0 2px var(--teal);
+}
+.tl-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r16);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s;
+}
+.tl-card:hover { box-shadow: var(--shadow-md); }
+.tl-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.25rem; }
+.tl-title { font-family: var(--h); font-size: 1.1rem; font-weight: 700; color: var(--ink); }
+.tl-badge {
+  font-size: 0.75rem; font-weight: 600;
+  background: var(--teal-pale); color: var(--teal-mid);
+  padding: 3px 12px; border-radius: var(--r999);
+  border: 1px solid rgba(13,180,160,0.2);
+}
+.tl-company { font-size: 0.9rem; color: var(--teal); font-weight: 600; margin-bottom: 0.15rem; }
+.tl-meta { font-size: 0.8rem; color: var(--soft); margin-bottom: 1.1rem; }
+.tl-list li {
+  font-size: 0.875rem; color: var(--soft);
+  padding: 0.2rem 0 0.2rem 1.1rem;
+  position: relative; line-height: 1.65;
+}
+.tl-list li::before { content: '·'; position: absolute; left: 0; color: var(--teal); font-size: 1.2rem; line-height: 1.4; }
+
+/* ============================================================
+   PROJECTS
+============================================================ */
+.proj-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 1.5rem;
+}
+.proj-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.25s, transform 0.25s;
+  display: flex; flex-direction: column;
+}
+.proj-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-5px); }
+.proj-banner {
+  height: 7px;
+}
+.proj-banner.teal { background: linear-gradient(90deg, var(--teal), var(--sky)); }
+.proj-banner.sky  { background: linear-gradient(90deg, var(--sky), #9B5DE5); }
+.proj-banner.rose { background: linear-gradient(90deg, var(--rose), var(--sand)); }
+.proj-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+.proj-flag { font-size: 2rem; margin-bottom: 0.75rem; }
+.proj-title { font-family: var(--h); font-size: 1.1rem; font-weight: 700; color: var(--ink); margin-bottom: 0.2rem; }
+.proj-client { font-size: 0.78rem; font-weight: 600; color: var(--soft); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.85rem; }
+.proj-desc { font-size: 0.875rem; color: var(--soft); line-height: 1.7; flex: 1; margin-bottom: 1.1rem; }
+.proj-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.proj-tag {
+  font-size: 0.72rem; font-weight: 500;
+  background: var(--off); color: var(--ink2);
+  padding: 3px 9px; border-radius: var(--r999);
+  border: 1px solid var(--border);
+}
+
+/* ============================================================
+   CERTIFICATIONS
+============================================================ */
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 1rem;
+}
+.cert-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--r16);
+  padding: 1.25rem 1.5rem;
+  display: flex; align-items: center; gap: 1rem;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.cert-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.cert-icon {
+  width: 44px; height: 44px; flex-shrink: 0;
+  border-radius: var(--r8);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+}
+.cert-icon.teal { background: var(--teal-pale); }
+.cert-icon.sky  { background: var(--sky-pale); }
+.cert-icon.rose { background: var(--rose-pale); }
+.cert-icon.sand { background: var(--sand-pale); }
+.cert-name { font-size: 0.9rem; font-weight: 600; color: var(--ink); margin-bottom: 2px; }
+.cert-by   { font-size: 0.78rem; color: var(--soft); }
+
+/* ============================================================
+   CONTACT
+============================================================ */
+.contact-wrap {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 3rem; align-items: start;
+}
+.contact-blurb { font-size: 0.95rem; color: var(--soft); line-height: 1.8; margin-bottom: 1.75rem; }
+.contact-link-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0.9rem 1rem;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--r8);
+  margin-bottom: 0.65rem;
+  color: var(--ink); font-size: 0.875rem; font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+.contact-link-item:hover { border-color: var(--teal); color: var(--teal); transform: translateX(4px); box-shadow: var(--shadow-md); }
+.contact-link-item svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.6; }
+.contact-link-item:hover svg { opacity: 1; }
+
+/* FORM */
+.contact-form {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+.form-title { font-family: var(--h); font-size: 1.15rem; font-weight: 700; color: var(--ink); margin-bottom: 1.5rem; }
+.field { margin-bottom: 1.1rem; }
+.field label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--ink2); margin-bottom: 0.35rem; }
+.field input, .field textarea, .field select {
+  width: 100%;
+  background: var(--off);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r8);
+  padding: 11px 14px;
+  font-size: 0.875rem;
+  font-family: var(--b);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field input:focus, .field textarea:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(13,180,160,0.1);
+  background: var(--white);
+}
+.field textarea { resize: vertical; min-height: 110px; }
+.form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.submit-btn {
+  width: 100%;
+  font-family: var(--h);
+  font-size: 0.95rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--teal) 0%, var(--sky) 100%);
+  color: var(--white);
+  border: none;
+  padding: 13px;
+  border-radius: var(--r999);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  letter-spacing: 0.3px;
+  margin-top: 0.25rem;
+}
+.submit-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+/* ============================================================
+   FOOTER
+============================================================ */
+footer {
+  background: var(--ink);
+  padding: 2.5rem 2rem;
+  text-align: center;
+}
+.footer-inner { max-width: 1120px; margin: 0 auto; }
+.footer-logo { font-family: var(--h); font-size: 1.4rem; font-weight: 800; color: var(--white); margin-bottom: 0.5rem; }
+.footer-logo span { color: var(--teal); }
+footer p { font-size: 0.82rem; color: rgba(255,255,255,0.4); }
+footer a { color: var(--teal); }
+
+/* ============================================================
+   MOBILE
+============================================================ */
+@media (max-width: 768px) {
+  .nav-links, .nav-cta { display: none; }
+  .hamburger { display: flex; }
+  .hero-inner { grid-template-columns: 1fr; }
+  .hero-card  { display: none; }
+  .contact-wrap { grid-template-columns: 1fr; }
+  .form-row2 { grid-template-columns: 1fr; }
+  .sec { padding: 4rem 1.25rem; }
+  .hero { padding: 7rem 1.25rem 4rem; }
+  nav { padding: 0; }
+  .nav-inner { padding: 0 1.25rem; }
+}
+@media (max-width: 480px) {
+  .skills-grid { grid-template-columns: 1fr; }
+  .proj-grid   { grid-template-columns: 1fr; }
+  .cert-grid   { grid-template-columns: 1fr; }
+  .hero h1 { letter-spacing: -1.5px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAV
+============================================================ -->
+<nav id="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">GJ <span class="dot"></span></div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Hire me</a>
+    <div class="hamburger" onclick="openMobile()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <span class="close-btn" onclick="closeMobile()">✕</span>
+  <a href="#about"      onclick="closeMobile()">About</a>
+  <a href="#skills"     onclick="closeMobile()">Skills</a>
+  <a href="#experience" onclick="closeMobile()">Experience</a>
+  <a href="#projects"   onclick="closeMobile()">Projects</a>
+  <a href="#contact"    onclick="closeMobile()">Contact</a>
+</div>
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<section class="hero" id="home">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="hero-inner">
+
+    <div class="hero-text">
+      <div class="hero-eyebrow reveal">
+        <span class="pulse"></span> Available for new opportunities
+      </div>
+      <h1 class="reveal d1">
+        Oracle<br/>
+        <em>FLEXCUBE</em><br/>
+        Consultant
+      </h1>
+      <p class="hero-sub reveal d2">
+        I build and customize core banking systems — from screen-level UI to backend PL/SQL logic and digital banking integrations — for clients across 3 countries.
+      </p>
+      <div class="hero-flags reveal d3">
+        <span class="flag-chip">🇱🇧 Bankmed, Lebanon</span>
+        <span class="flag-chip">🇹🇬 Cofina, Togo</span>
+        <span class="flag-chip">🇦🇱 Union Bank, Albania</span>
+      </div>
+      <div class="hero-actions reveal d4">
+        <a href="#projects" class="btn-primary">View projects →</a>
+        <a href="#contact"  class="btn-outline">Get in touch</a>
+      </div>
+    </div>
+
+    <div class="hero-card reveal-right d2">
+      <div class="hcard-avatar">GJ</div>
+      <div class="hcard-name">Gangaraju Jalapinti</div>
+      <div class="hcard-role">Oracle FLEXCUBE Consultant · JMR Infotech</div>
+      <div class="hcard-divider"></div>
+      <div class="hcard-stat"><span class="hcard-label">Experience</span><span class="hcard-val">2+ years</span></div>
+      <div class="hcard-stat"><span class="hcard-label">Domain</span><span class="hcard-val">Banking & Fintech</span></div>
+      <div class="hcard-stat"><span class="hcard-label">Location</span><span class="hcard-val">Tirupati, India 🇮🇳</span></div>
+      <div class="hcard-stat"><span class="hcard-label">Education</span><span class="hcard-val">B.Tech ECE, 2023</span></div>
+      <div class="hcard-badge"><span class="dot2"></span> Open to work</div>
+      <div class="stats-strip">
+        <div class="stat-cell"><div class="stat-n">3</div><div class="stat-l">Countries</div></div>
+        <div class="stat-cell"><div class="stat-n">3</div><div class="stat-l">Projects</div></div>
+        <div class="stat-cell"><div class="stat-n">4</div><div class="stat-l">Certs</div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============================================================
+     SKILLS
+============================================================ -->
+<section class="sec alt" id="skills">
+  <div class="sec-inner">
+    <div class="sec-head reveal">
+      <p class="sec-eyebrow">What I work with</p>
+      <h2 class="sec-title">Technical skills</h2>
+      <p class="sec-sub">Specialized in Oracle banking technology with strong Java and database foundations.</p>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-pill-group reveal d1">
+        <div class="spg-header">
+          <div class="spg-icon teal">🏦</div>
+          <span class="spg-name">Core Banking</span>
+        </div>
+        <div class="spg-tags">
+          <span class="spg-tag">Oracle FLEXCUBE</span>
+          <span class="spg-tag">FCUBS RAD Tool</span>
+          <span class="spg-tag">OBDX</span>
+          <span class="spg-tag">OBMA</span>
+          <span class="spg-tag">OBBRN</span>
+          <span class="spg-tag">OBO / OBRH</span>
+        </div>
+      </div>
+      <div class="skill-pill-group reveal d2">
+        <div class="spg-header">
+          <div class="spg-icon sky">☕</div>
+          <span class="spg-name">Java & Backend</span>
+        </div>
+        <div class="spg-tags">
+          <span class="spg-tag">Java 8</span>
+          <span class="spg-tag">J2EE</span>
+          <span class="spg-tag">Spring Boot</span>
+          <span class="spg-tag">Spring MVC</span>
+          <span class="spg-tag">JPA / Hibernate</span>
+          <span class="spg-tag">JDBC</span>
+        </div>
+      </div>
+      <div class="skill-pill-group reveal d3">
+        <div class="spg-header">
+          <div class="spg-icon rose">🗄️</div>
+          <span class="spg-name">Database</span>
+        </div>
+        <div class="spg-tags">
+          <span class="spg-tag">Oracle SQL</span>
+          <span class="spg-tag">PL/SQL</span>
+          <span class="spg-tag">Data Migration</span>
+          <span class="spg-tag">Staging Tables</span>
+        </div>
+      </div>
+      <div class="skill-pill-group reveal d4">
+        <div class="spg-header">
+          <div class="spg-icon sand">🔗</div>
+          <span class="spg-name">Integration & APIs</span>
+        </div>
+        <div class="spg-tags">
+          <span class="spg-tag">REST API</span>
+          <span class="spg-tag">SOAP / WSDL</span>
+          <span class="spg-tag">SOAP UI</span>
+          <span class="spg-tag">WebLogic</span>
+          <span class="spg-tag">XML</span>
+        </div>
+      </div>
+      <div class="skill-pill-group reveal d5">
+        <div class="spg-header">
+          <div class="spg-icon teal">⚙️</div>
+          <span class="spg-name">Banking Modules</span>
+        </div>
+        <div class="spg-tags">
+          <span class="spg-tag">CASA</span>
+          <span class="spg-tag">CIF</span>
+          <span class="spg-tag">PM (Payments)</span>
+          <span class="spg-tag">OBTR / OBTF</span>
+          <span class="spg-tag">RT Transactions</span>
+        </div>
+      </div>
+      <div class="skill-pill-group reveal d6">
+        <div class="spg-header">
+          <div class="spg-icon sky">🌐</div>
+          <span class="spg-name">Frontend</span>
+        </div>
+        <div class="spg-tags">
+          <span class="spg-tag">HTML5</span>
+          <span class="spg-tag">CSS</span>
+          <span class="spg-tag">JavaScript</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     EXPERIENCE
+============================================================ -->
+<section class="sec" id="experience">
+  <div class="sec-inner">
+    <div class="sec-head reveal">
+      <p class="sec-eyebrow">Career</p>
+      <h2 class="sec-title">Experience</h2>
+      <p class="sec-sub">2+ years building and integrating core banking systems for international clients.</p>
+    </div>
+    <div class="timeline">
+      <div class="tl-item reveal">
+        <div class="tl-dot"></div>
+        <div class="tl-card">
+          <div class="tl-top">
+            <div class="tl-title">Associate Consultant</div>
+            <span class="tl-badge">2023 — Present</span>
+          </div>
+          <div class="tl-company">JMR Infotech India</div>
+          <div class="tl-meta">Hyderabad, India · Full-time</div>
+          <ul class="tl-list">
+            <li>FLEXCUBE screen & backend customization using RAD Tool for international banking clients</li>
+            <li>Designed Commission & Charges and Credit Limit screens; implemented PL/SQL validations and RT advice generation in XML</li>
+            <li>End-to-end CIF & CASA data migration from legacy systems to FLEXCUBE with PL/SQL scripting</li>
+            <li>Managed OBDX–FLEXCUBE integration: SOAP UI testing via WebLogic WSDL, log analysis, defect resolution</li>
+            <li>Worked across Lebanon, Togo, and Albania — coordinating directly with international client teams</li>
+          </ul>
+        </div>
+      </div>
+      <div class="tl-item reveal d2">
+        <div class="tl-dot" style="background:var(--sand)"></div>
+        <div class="tl-card">
+          <div class="tl-top">
+            <div class="tl-title">B.Tech in Electronics & Communication Engineering</div>
+            <span class="tl-badge" style="background:var(--sand-pale);color:#8B6A10;border-color:rgba(244,184,96,0.3)">2019 — 2023</span>
+          </div>
+          <div class="tl-company" style="color:var(--sand)">Sanskrithi School of Engineering, Puttaparthi</div>
+          <div class="tl-meta">Andhra Pradesh, India</div>
+          <ul class="tl-list">
+            <li>Graduated with a B.Tech in Electronics and Communication Engineering</li>
+            <li>Built strong foundations in programming, logic, and analytical problem solving</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PROJECTS
+============================================================ -->
+<section class="sec alt" id="projects">
+  <div class="sec-inner">
+    <div class="sec-head reveal">
+      <p class="sec-eyebrow">Client work</p>
+      <h2 class="sec-title">Projects</h2>
+      <p class="sec-sub">Real-world banking system implementations across 3 countries.</p>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card reveal d1">
+        <div class="proj-banner teal"></div>
+        <div class="proj-body">
+          <div class="proj-flag">🇱🇧</div>
+          <div class="proj-title">FLEXCUBE Customization</div>
+          <div class="proj-client">Bankmed · Lebanon</div>
+          <p class="proj-desc">Designed and customized Commission & Charges and Credit Limit screens using the RAD Tool. Implemented backend PL/SQL validations and XML advice generation for real-time transactions. Performed end-to-end testing aligned to FLEXCUBE standards.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">RAD Tool</span>
+            <span class="proj-tag">PL/SQL</span>
+            <span class="proj-tag">Java</span>
+            <span class="proj-tag">JavaScript</span>
+            <span class="proj-tag">FCUBS</span>
+          </div>
+        </div>
+      </div>
+      <div class="proj-card reveal d2">
+        <div class="proj-banner sky"></div>
+        <div class="proj-body">
+          <div class="proj-flag">🇹🇬</div>
+          <div class="proj-title">CIF & CASA Migration</div>
+          <div class="proj-client">Cofina · Togo</div>
+          <p class="proj-desc">End-to-end migration of Customer Information File and Current/Savings Account data from legacy systems to FLEXCUBE. Developed PL/SQL scripts for staging table uploads, data transformation, validation, and reconciliation.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">PL/SQL</span>
+            <span class="proj-tag">STDCIF</span>
+            <span class="proj-tag">STDCUSAC</span>
+            <span class="proj-tag">Data Migration</span>
+          </div>
+        </div>
+      </div>
+      <div class="proj-card reveal d3">
+        <div class="proj-banner rose"></div>
+        <div class="proj-body">
+          <div class="proj-flag">🇦🇱</div>
+          <div class="proj-title">OBDX Integration</div>
+          <div class="proj-client">Union Bank Albania · Albania</div>
+          <p class="proj-desc">Managed FLEXCUBE side of OBDX digital banking integration. Tested XML requests via SOAP UI using WebLogic WSDL, analyzed frontend/backend logs, and resolved data synchronization issues between platforms.</p>
+          <div class="proj-tags">
+            <span class="proj-tag">SOAP UI</span>
+            <span class="proj-tag">WebLogic</span>
+            <span class="proj-tag">Java J2EE</span>
+            <span class="proj-tag">REST API</span>
+            <span class="proj-tag">OBDX</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CERTIFICATIONS
+============================================================ -->
+<section class="sec" id="certifications">
+  <div class="sec-inner">
+    <div class="sec-head reveal">
+      <p class="sec-eyebrow">Credentials</p>
+      <h2 class="sec-title">Certifications</h2>
+    </div>
+    <div class="cert-grid">
+      <div class="cert-card reveal d1">
+        <div class="cert-icon teal">☁️</div>
+        <div><div class="cert-name">OCI AI Foundations Associate</div><div class="cert-by">Oracle</div></div>
+      </div>
+      <div class="cert-card reveal d2">
+        <div class="cert-icon sky">🗄️</div>
+        <div><div class="cert-name">SQL</div><div class="cert-by">IBM</div></div>
+      </div>
+      <div class="cert-card reveal d3">
+        <div class="cert-icon rose">☕</div>
+        <div><div class="cert-name">Java</div><div class="cert-by">Intellipaat</div></div>
+      </div>
+      <div class="cert-card reveal d4">
+        <div class="cert-icon sand">🌐</div>
+        <div><div class="cert-name">HTML & CSS5</div><div class="cert-by">Great Learning</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACT
+============================================================ -->
+<section class="sec alt" id="contact">
+  <div class="sec-inner">
+    <div class="sec-head reveal">
+      <p class="sec-eyebrow">Get in touch</p>
+      <h2 class="sec-title">Contact me</h2>
+    </div>
+    <div class="contact-wrap">
+      <div class="reveal-left">
+        <p class="contact-blurb">Open to FLEXCUBE consulting roles, Java development, and core banking projects globally. I respond within 24 hours.</p>
+        <a href="mailto:gangaraju.jalapinti@gmail.com" class="contact-link-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          gangaraju.jalapinti@gmail.com
+        </a>
+        <a href="https://linkedin.com/in/gangaraju-jalapinti" target="_blank" class="contact-link-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          linkedin.com/in/gangaraju-jalapinti
+        </a>
+        <a href="https://github.com/Gangaraju-Jalapinti" target="_blank" class="contact-link-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+          github.com/Gangaraju-Jalapinti
+        </a>
+        <a href="tel:+91XXXXXXXXXX" class="contact-link-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.08 1.18 2 2 0 012.06 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+          +91 XXXXXXXXXX · Add your number
+        </a>
+      </div>
+
+      <div class="reveal-right">
+        <form class="contact-form" action="https://formspree.io/f/mkoakdea" method="POST">
+          <div class="form-title">Send a message ✉</div>
+          <div class="form-row2">
+            <div class="field">
+              <label>First name</label>
+              <input type="text" name="firstname" placeholder="Ravi" required/>
+            </div>
+            <div class="field">
+              <label>Last name</label>
+              <input type="text" name="lastname" placeholder="Kumar"/>
+            </div>
+          </div>
+          <div class="field">
+            <label>Email address</label>
+            <input type="email" name="email" placeholder="ravi@company.com" required/>
+          </div>
+          <div class="field">
+            <label>Subject</label>
+            <input type="text" name="subject" placeholder="FLEXCUBE project inquiry"/>
+          </div>
+          <div class="field">
+            <label>Message</label>
+            <textarea name="message" placeholder="Tell me about the opportunity or project..." required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">Send message →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">GJ<span>.</span></div>
+    <p>Built by <a href="#home">Gangaraju Jalapinti</a> · Oracle FLEXCUBE Consultant · Tirupati, India 🇮🇳</p>
+  </div>
+</footer>
+
+<!-- ============================================================
+     JS
+============================================================ -->
+<script>
+/* NAV scroll shadow */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
+
+/* Mobile menu */
+function openMobile()  { document.getElementById('mobileNav').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeMobile() { document.getElementById('mobileNav').classList.remove('open'); document.body.style.overflow=''; }
+
+/* Smooth anchor scroll */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+
+/* Scroll reveal */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(en => {
+    if (en.isIntersecting) {
+      en.target.classList.add('visible');
+      observer.unobserve(en.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+/* Trigger hero reveals on load */
+window.addEventListener('load', () => {
+  document.querySelectorAll('.hero .reveal, .hero .reveal-right, .hero .reveal-left').forEach(el => {
+    setTimeout(() => el.classList.add('visible'), 100);
+  });
+});
+</script>
+</body>
+</html>
